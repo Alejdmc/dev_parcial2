@@ -1,28 +1,26 @@
-'''Este es el archivo con la conexión a la DB.'''
-import os
-from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
-CLEVER_DB=(
-    f"postgresql+asyncpg://{os.getenv('CLEVER_USER')}:"
-    f"{os.getenv('CLEVER_PASSWORD')}@"
-    f"{os.getenv('CLEVER_HOST')}:"
-    f"{os.getenv('CLEVER_PORT')}/"
-    f"{os.getenv('CLEVER_DATABASE')}"
+# Datos de conexión a Clever Cloud (POSTGRESQL)
+CLEVER_DB = (
+    "postgresql+asyncpg://u2yvszfhd7jg7aaep3to:"
+    "RfcLScfu3FaOP9o69x1Gf0NEuXCl5k@"
+    "bay4s8hxzdohbeprhmkl-postgresql.services.clever-cloud.com:"
+    "50013/bay4s8hxzdohbeprhmkl"
 )
-DATABASE_URL= "sqlite+aiosqlite:///petsdb.db"
 
-engine : AsyncEngine = create_async_engine(CLEVER_DB, echo=True)
-async_session =sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+# Crear el motor de la base de datos
+engine: AsyncEngine = create_async_engine(CLEVER_DB, echo=True)
+async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
+# Inicializar la base de datos (crear tablas)
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
+# Obtener una sesión asíncrona
 async def get_session():
     async with async_session() as session:
         yield session
