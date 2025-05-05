@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils.connection_db import init_db, get_session
 import operations.operations_db as crud
-from datas.models import Usuario, Estado_usuario
+from datas.models import Usuario, Estado_usuario, UsuarioCreate
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/usuarios/")
-async def crear(usuario: Usuario, session: AsyncSession = Depends(get_session)):
+async def crear(usuario: UsuarioCreate, session: AsyncSession = Depends(get_session)):
     return await crud.crear_usuario(session, usuario)
 
 @app.get("/usuarios/")

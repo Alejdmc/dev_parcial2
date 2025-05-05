@@ -1,9 +1,10 @@
-from datas.models import Usuario, Estado_usuario
+from datas.models import Usuario, Estado_usuario, UsuarioCreate
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
-async def crear_usuario(session: AsyncSession, usuario: Usuario):
+async def crear_usuario(session: AsyncSession, usuario_create: UsuarioCreate):
+    usuario = Usuario.from_orm(usuario_create)
     session.add(usuario)
     await session.commit()
     await session.refresh(usuario)
