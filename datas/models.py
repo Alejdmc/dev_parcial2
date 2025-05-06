@@ -8,7 +8,6 @@ class Estado_usuario(str, Enum):
     inactivo = "Inactivo"
     eliminado = "Eliminado"
 
-# Modelo de tabla (incluye todos los campos)
 class Usuario(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     nombre: str
@@ -20,7 +19,6 @@ class Usuario(SQLModel, table=True):
     estado: Estado_usuario = Field(default=Estado_usuario.activo)
     premium: bool = Field(default=False)
 
-# Modelo para crear usuario (sin id ni fechas)
 class UsuarioCreate(SQLModel):
     nombre: str
     apellido: str
