@@ -1,6 +1,7 @@
-from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional
 from datetime import datetime
+
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
 from enum import Enum
 
 class Estado_usuario(str, Enum):
@@ -19,6 +20,8 @@ class Usuario(SQLModel, table=True):
     estado: Estado_usuario = Field(default=Estado_usuario.activo)
     premium: bool = Field(default=False)
 
+    tareas: List["Tarea"] = Relationship(back_populates="usuario")
+
 class EstadoTareaEnum(str, Enum):
     pendiente = "Pendiente"
     en_ejecucion = "En ejecución"
@@ -29,8 +32,6 @@ class Tarea(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     nombre: str
     descripcion: str
-    fecha_creacion: datetime = Field(default_factory=datetime.utcnow)
-    fecha_modificacion: datetime = Field(default_factory=datetime.utcnow)
     estado: EstadoTareaEnum
     usuario_id: int = Field(foreign_key="usuario.id")
     usuario: Optional[Usuario] = Relationship(back_populates="tareas")
@@ -40,3 +41,6 @@ class UsuarioCreate(SQLModel):
     apellido: str
     email: str
     password: str
+
+    class Config:
+        orm_mode = True

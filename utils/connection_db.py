@@ -1,6 +1,8 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlmodel import SQLModel
 
 CLEVER_DB = (
     "postgresql+asyncpg://u2yvszfhd7jg7aaep3to:RfcLScfu3FaOP9o69x1Gf0NEuXCl5k@"
@@ -16,7 +18,7 @@ Base = declarative_base()
 
 async def init_db():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
 
 async def get_session():
     async with async_session() as session:

@@ -53,18 +53,20 @@ async def por_estado(estado: Estado_usuario, session: AsyncSession = Depends(get
 async def premium_activos(session: AsyncSession = Depends(get_session)):
     return await op.premium_activos(session)
 
+
+
+@app.post("/tareas/", response_model=Tarea)
+async def crear_tarea(tarea: Tarea, session: AsyncSession = Depends(get_session)):
+    session.add(tarea)
+    await session.commit()
+    await session.refresh(tarea)
+    return tarea
+
 def get_db():
     with db.get_session() as session:
         yield session
-
-@app.post("/tareas/", response_model=Tarea)
-def crear_tarea(tarea: Tarea, db: Session = Depends(get_db)):
-    db.add(tarea)
-    db.commit()
-    db.refresh(tarea)
-    return tarea
-
 @app.get("/tareas/", response_model=list[Tarea])
-def listar_tareas(db: Session = Depends(get_db)):
-    tareas = db.exec(select(Tarea)).all()
-    return tareas
+async def listar_tareas(session: AsyncSession = Depends(get_session)):
+    result = await session.exec(select(Tarea))
+    return result.all()
+

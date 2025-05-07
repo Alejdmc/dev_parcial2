@@ -1,7 +1,13 @@
-from datas.models import Usuario, Estado_usuario, UsuarioCreate, Tarea
+from fastapi import Depends
+from datas.models import Usuario, Estado_usuario, UsuarioCreate, Tarea, SQLModel
 from sqlmodel import select, Session
 from sqlmodel.ext.asyncio.session import AsyncSession
+from utils.connection_db import get_session, engine
 
+
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
 
 async def crear_usuario(session: AsyncSession, usuario_create: UsuarioCreate):
     usuario = Usuario.from_orm(usuario_create)
@@ -11,20 +17,14 @@ async def crear_usuario(session: AsyncSession, usuario_create: UsuarioCreate):
     return usuario
 
 class TareaService:
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
-    def crear_tarea(self, nombre: str, descripcion: str, estado: str, usuario_id: int) -> Tarea:
-        nueva_tarea = Tarea(
-            nombre=nombre,
-            descripcion=descripcion,
-            estado=estado,
-            usuario_id=usuario_id
-        )
-        self.session.add(nueva_tarea)
-        self.session.commit()
-        self.session.refresh(nueva_tarea)
-        return nueva_tarea
+    async def crear_tarea(self, tarea: Tarea):
+        self.session.add(tarea)
+        await self.session.commit()
+        await self.session.refresh(tarea)
+        return tarea
 
 async def obtener_todos(session: AsyncSession):
     result = await session.exec(select(Usuario))
