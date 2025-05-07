@@ -1,5 +1,5 @@
-from datas.models import Usuario, Estado_usuario, UsuarioCreate
-from sqlmodel import select
+from datas.models import Usuario, Estado_usuario, UsuarioCreate, Tarea
+from sqlmodel import select, Session
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
@@ -9,6 +9,22 @@ async def crear_usuario(session: AsyncSession, usuario_create: UsuarioCreate):
     await session.commit()
     await session.refresh(usuario)
     return usuario
+
+class TareaService:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def crear_tarea(self, nombre: str, descripcion: str, estado: str, usuario_id: int) -> Tarea:
+        nueva_tarea = Tarea(
+            nombre=nombre,
+            descripcion=descripcion,
+            estado=estado,
+            usuario_id=usuario_id
+        )
+        self.session.add(nueva_tarea)
+        self.session.commit()
+        self.session.refresh(nueva_tarea)
+        return nueva_tarea
 
 async def obtener_todos(session: AsyncSession):
     result = await session.exec(select(Usuario))
