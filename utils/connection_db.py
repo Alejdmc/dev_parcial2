@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 import asyncpg
 
 CLEVER_DB = (
-    "postgresql+asyncpg://u2yvszfhd7jg7aaep3to:"
+    "postgresql://u2yvszfhd7jg7aaep3to:"
     "RfcLScfu3FaOP9o69x1Gf0NEuXCl5k@"
     "bay4s8hxzdohbeprhmkl-postgresql.services.clever-cloud.com:"
     "50013/bay4s8hxzdohbeprhmkl"
