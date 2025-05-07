@@ -49,11 +49,11 @@ async def hacer_premium(session: AsyncSession, user_id: int):
         await session.refresh(usuario)
     return usuario
 
-async def obtener_por_estado(session: AsyncSession, estado: Estado_usuario):
+async def por_estado(session: AsyncSession, estado: Estado_usuario):
     result = await session.exec(select(Usuario).where(Usuario.estado == estado))
     return result.all()
 
-async def obtener_premium_activos(session: AsyncSession):
+async def premium_activos(session: AsyncSession):
     result = await session.exec(
         select(Usuario).where(
             Usuario.estado == Estado_usuario.activo,
