@@ -47,7 +47,7 @@ async def premium(user_id: int, session: AsyncSession = Depends(get_session)):
 
 @app.get("/usuarios/estado/{estado}")
 async def por_estado(estado: Estado_usuario, session: AsyncSession = Depends(get_session)):
-    return await op.obtener_estado(session, estado)
+    return await op.por_estado(session, estado)
 
 @app.get("/usuarios/premium/activos")
 async def premium_activos(session: AsyncSession = Depends(get_session)):
